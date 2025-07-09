@@ -1,0 +1,340 @@
+/* HeroPanel.module.css */
+.heroSection {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  
+  /* Creative Education & Blockchain Background */
+  background: linear-gradient(135deg, 
+    #fef4ea 0%, 
+    #e8f4fd 25%, 
+    #f0e8ff 50%, 
+    #fff0f5 75%, 
+    #fef4ea 100%
+  );
+  
+  /* Add animated geometric patterns */
+  background-image: 
+    /* Blockchain-inspired hexagonal pattern */
+    radial-gradient(circle at 20% 20%, rgba(96, 76, 195, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(255, 127, 62, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 60%, rgba(96, 76, 195, 0.05) 0%, transparent 50%),
+    /* Education-inspired book/learning patterns */
+    linear-gradient(45deg, transparent 40%, rgba(96, 76, 195, 0.03) 50%, transparent 60%),
+    linear-gradient(-45deg, transparent 40%, rgba(255, 127, 62, 0.03) 50%, transparent 60%);
+  
+  background-size: 
+    400px 400px,
+    300px 300px,
+    500px 500px,
+    100px 100px,
+    100px 100px;
+  
+  background-position: 
+    0% 0%,
+    100% 100%,
+    50% 50%,
+    0% 0%,
+    0% 0%;
+  
+  /* Animated background movement */
+  animation: backgroundFloat 20s ease-in-out infinite;
+  
+  /* Add padding to account for header only */
+  padding-top: 80px;
+}
+
+@keyframes backgroundFloat {
+  0%, 100% {
+    background-position: 
+      0% 0%,
+      100% 100%,
+      50% 50%,
+      0% 0%,
+      0% 0%;
+  }
+  50% {
+    background-position: 
+      10% 10%,
+      90% 90%,
+      60% 40%,
+      5% 5%,
+      -5% 5%;
+  }
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    rgba(96, 76, 195, 0.15) 0%,
+    rgba(255, 127, 62, 0.1) 50%,
+    rgba(96, 76, 195, 0.05) 100%
+  );
+  z-index: 2;
+}
+
+/* Add floating educational elements */
+.overlay::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    /* Blockchain nodes */
+    radial-gradient(circle at 15% 25%, rgba(96, 76, 195, 0.2) 2px, transparent 2px),
+    radial-gradient(circle at 85% 15%, rgba(255, 127, 62, 0.2) 2px, transparent 2px),
+    radial-gradient(circle at 25% 75%, rgba(96, 76, 195, 0.15) 1px, transparent 1px),
+    radial-gradient(circle at 75% 85%, rgba(255, 127, 62, 0.15) 1px, transparent 1px),
+    /* Connection lines */
+    linear-gradient(45deg, transparent 49%, rgba(96, 76, 195, 0.1) 50%, transparent 51%),
+    linear-gradient(-45deg, transparent 49%, rgba(255, 127, 62, 0.1) 50%, transparent 51%);
+  
+  background-size: 
+    200px 200px,
+    250px 250px,
+    150px 150px,
+    180px 180px,
+    300px 300px,
+    300px 300px;
+  
+  animation: floatingElements 15s linear infinite;
+  z-index: 1;
+}
+
+@keyframes floatingElements {
+  0% {
+    transform: translateX(0) translateY(0);
+  }
+  100% {
+    transform: translateX(-20px) translateY(-20px);
+  }
+}
+
+/* Bolt Logo positioned lower */
+.boltLogo {
+  position: absolute;
+  top: 140px; /* Moved down significantly */
+  right: 2rem;
+  z-index: 4;
+  animation: fadeInScale 1s ease-out 0.8s both;
+}
+
+.boltLogoImage {
+  width: 80px;
+  height: 80px;
+  opacity: 0.9;
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+}
+
+.boltLogoImage:hover {
+  opacity: 1;
+  transform: scale(1.05);
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.3));
+}
+
+.content {
+  position: relative;
+  z-index: 3;
+  text-align: center;
+  color: #604cc3;
+  max-width: 800px;
+  padding: 2rem;
+}
+
+.mainTitle {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800;
+  margin-bottom: 2rem;
+  line-height: 1.1;
+  background: linear-gradient(135deg, #604cc3 0%, #ff7f3e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 2px 4px rgba(96, 76, 195, 0.1);
+  animation: fadeInUp 1s ease-out;
+}
+
+.descriptionContainer {
+  margin-bottom: 3rem;
+  animation: fadeInUp 1s ease-out 0.2s both;
+}
+
+.description {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  opacity: 0.8;
+  line-height: 1.6;
+  margin: 0;
+  font-weight: 500;
+  color: #604cc3;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  animation: fadeInUp 1s ease-out 0.4s both;
+}
+
+.primaryButton {
+  /* Diperbarui agar mirip dengan deskripsi tombol Connect Wallet */
+  background: #604cc3; /* Warna default tombol Connect Wallet */
+  color: #fef4ea; /* Warna teks saat background #604cc3 */
+  border: 2px solid transparent; /* Border transparan karena sudah solid color */
+  padding: 1rem 2rem;
+  border-radius: 0.5rem; /* Dibuat lebih kotak (kurang rounded) */
+  font-weight: 600;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.primaryButton:hover {
+  /* Ini sudah sesuai dengan deskripsi hover yang kamu berikan */
+  background: linear-gradient(135deg, #604cc3, #ff7f3e); /* Gradient on hover */
+  color: #fef4ea;
+  border-color: transparent;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(96, 76, 195, 0.3);
+}
+
+/* Add slide animation for text on hover */
+.primaryButton:hover span {
+  transform: translateX(3px);
+}
+
+.primaryButton span {
+  transition: transform 0.3s ease;
+}
+
+/* Kelas .secondaryButton ini sudah tidak digunakan di HeroPanel.tsx,
+   tapi tetap disertakan dalam file CSS jika mungkin digunakan di tempat lain.
+   Jika tidak, kamu bisa menghapusnya untuk membersihkan kode. */
+.secondaryButton {
+  background: #604cc3; 
+  color: #fef4ea;
+  border: 2px solid transparent;
+  padding: 1rem 2rem;
+  border-radius: 1rem; 
+  font-weight: 600;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.secondaryButton:hover {
+  background: linear-gradient(135deg, #604cc3, #ff7f3e); 
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(96, 76, 195, 0.3);
+}
+
+/* Add slide animation for text on hover */
+.secondaryButton:hover span {
+  transform: translateX(3px);
+}
+
+.secondaryButton span {
+  transition: transform 0.3s ease;
+}
+
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .heroSection {
+    padding-top: 70px;
+  }
+  
+  .content {
+    padding: 1rem;
+  }
+
+  .actionButtons {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .primaryButton,
+  .secondaryButton { /* Secondary button tetap disertakan untuk jaga-jaga */
+    width: 100%;
+    max-width: 280px;
+    justify-content: center;
+  }
+
+  .boltLogo {
+    top: 120px; /* Adjusted for mobile */
+    right: 1.5rem;
+  }
+
+  .boltLogoImage {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+@media (max-width: 480px) {
+  .heroSection {
+    min-height: 80vh;
+    padding-top: 60px;
+  }
+
+  .primaryButton,
+  .secondaryButton { /* Secondary button tetap disertakan untuk jaga-jaga */
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  .boltLogo {
+    top: 100px; /* Further adjusted for small mobile */
+  }
+
+  .boltLogoImage {
+    width: 50px;
+    height: 50px;
+  }
+}
