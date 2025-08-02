@@ -23,10 +23,18 @@ const Header: React.FC = () => {
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
   const [isCartDropdownOpen, setIsCartDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [cart, setCart] = useState<any[]>([]);
+
+  interface CartItem {
+    arweaveId: string;
+    moduleTitle: string;
+    authorName: string;
+    moduleType: 'Free' | 'Paid';
+    price?: number;
+  }
+
+  const [cart, setCart] = useState<CartItem[]>([]);
   const [currentLogo, setCurrentLogo] = useState('/coinspace-normal-logo copy.png');
-  
-  // Tooltip states
+
   const [showMenuTooltip, setShowMenuTooltip] = useState(true);
   const [showCartTooltip, setShowCartTooltip] = useState(true);
   const [showLanguageTooltip, setShowLanguageTooltip] = useState(true);
@@ -34,7 +42,7 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const cartDropdownRef = useRef<HTMLDivElement>(null);
-  const { t, setLanguage, currentLanguage } = useLanguage();
+  const { t, setLanguage } = useLanguage();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -51,7 +59,6 @@ const Header: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // Load cart from localStorage
     const savedCart = JSON.parse(localStorage.getItem('coinspace_cart') || '[]');
     setCart(savedCart);
   }, []);
@@ -104,7 +111,7 @@ const Header: React.FC = () => {
   const calculateCartTotal = () => {
     return cart.reduce((total, item) => {
       if (item.moduleType === 'Paid') {
-        return total + (item.price / 1000000000); // Convert from MIST to SUI
+        return total + ((item.price ?? 0) / 1000000000); // FIXED!
       }
       return total;
     }, 0);
@@ -125,7 +132,7 @@ const Header: React.FC = () => {
     <>
       <header className={styles.header}>
         <div className={styles.headerContainer}>
-          {/* Logo and Brand */}
+          {/* Brand */}
           <div className={styles.brandSection}>
             <Link
               to="/about"
@@ -133,17 +140,13 @@ const Header: React.FC = () => {
               onMouseLeave={() => handleLogoHover(false)}
               className={styles.logoLink}
             >
-              <img
-                src={currentLogo}
-                alt="Coinspace"
-                className={styles.logo}
-              />
+              <img src={currentLogo} alt="Coinspace" className={styles.logo} />
               <div className={styles.tooltip}>{t('header.about')}</div>
             </Link>
             <h1 className={styles.brandName}>Coinspace</h1>
           </div>
 
-          {/* Center Section - Search & Cart */}
+          {/* Search & Cart */}
           <div className={styles.centerSection}>
             <form onSubmit={handleSearch} className={styles.searchBar}>
               <Search className={styles.searchIcon} />
@@ -155,25 +158,21 @@ const Header: React.FC = () => {
                 className={styles.searchInput}
               />
             </form>
-            
-            {/* Cart Container with Tooltip and Dropdown */}
+
             <div
-                className={styles.cartContainer}
-                onMouseEnter={() => setShowCartTooltip(true)}
-                onMouseLeave={() => setShowCartTooltip(false)}
-                ref={cartDropdownRef}
+              className={styles.cartContainer}
+              onMouseEnter={() => setShowCartTooltip(true)}
+              onMouseLeave={() => setShowCartTooltip(false)}
+              ref={cartDropdownRef}
             >
               <button className={styles.cartButton} onClick={handleCartClick}>
                 <ShoppingCart size={20} />
-                {cart.length > 0 && (
-                  <span className={styles.cartBadge}>{cart.length}</span>
-                )}
+                {cart.length > 0 && <span className={styles.cartBadge}>{cart.length}</span>}
               </button>
               {showCartTooltip && !isCartDropdownOpen && (
                 <div className={styles.tooltip}>{t('header.cart.tooltip')}</div>
               )}
 
-              {/* Enhanced Cart Dropdown Menu */}
               <div className={`${styles.cartDropdown} ${isCartDropdownOpen ? styles.open : ''}`}>
                 {cart.length === 0 ? (
                   <>
@@ -186,31 +185,38 @@ const Header: React.FC = () => {
                   <div className="w-80 max-h-96 overflow-y-auto">
                     <div className="flex justify-between items-center mb-3 pb-2 border-b">
                       <h3 className="font-semibold text-gray-900">Cart ({cart.length})</h3>
-                      <button 
+                      <button
                         onClick={clearCart}
                         className="text-xs text-red-600 hover:text-red-800"
                       >
                         Clear All
                       </button>
                     </div>
-                    
+
                     <div className="space-y-3 mb-4">
                       {cart.map((item, index) => (
-                        <div key={`${item.arweaveId}-${index}`} className="flex items-start gap-3 p-2 bg-gray-50 rounded">
+                        <div
+                          key={`${item.arweaveId}-${index}`}
+                          className="flex items-start gap-3 p-2 bg-gray-50 rounded"
+                        >
                           <div className="flex-1 min-w-0">
-                            <h4 className="text-sm font-medium text-gray-900 truncate">{item.moduleTitle}</h4>
+                            <h4 className="text-sm font-medium text-gray-900 truncate">
+                              {item.moduleTitle}
+                            </h4>
                             <p className="text-xs text-gray-600">{item.authorName}</p>
                             <div className="flex items-center gap-2 mt-1">
-                              <span className={`text-xs px-2 py-0.5 rounded ${
-                                item.moduleType === 'Free' 
-                                  ? 'bg-green-100 text-green-700' 
-                                  : 'bg-blue-100 text-blue-700'
-                              }`}>
+                              <span
+                                className={`text-xs px-2 py-0.5 rounded ${
+                                  item.moduleType === 'Free'
+                                    ? 'bg-green-100 text-green-700'
+                                    : 'bg-blue-100 text-blue-700'
+                                }`}
+                              >
                                 {item.moduleType}
                               </span>
                               {item.moduleType === 'Paid' && (
                                 <span className="text-xs font-medium text-purple-700">
-                                  {(item.price / 1000000000).toFixed(2)} SUI
+                                  {((item.price ?? 0) / 1000000000).toFixed(2)} SUI
                                 </span>
                               )}
                             </div>
@@ -224,16 +230,18 @@ const Header: React.FC = () => {
                         </div>
                       ))}
                     </div>
-                    
+
                     {calculateCartTotal() > 0 && (
                       <div className="border-t pt-3 mb-3">
                         <div className="flex justify-between items-center">
                           <span className="font-medium text-gray-900">Total:</span>
-                          <span className="font-bold text-[#604cc3]">{calculateCartTotal().toFixed(2)} SUI</span>
+                          <span className="font-bold text-[#604cc3]">
+                            {calculateCartTotal().toFixed(2)} SUI
+                          </span>
                         </div>
                       </div>
                     )}
-                    
+
                     <button className="w-full bg-[#604cc3] text-white py-2 rounded-lg text-sm font-medium hover:bg-[#ff7f3e] transition-colors">
                       Checkout ({cart.length} items)
                     </button>
@@ -243,72 +251,65 @@ const Header: React.FC = () => {
             </div>
           </div>
 
-          {/* Right-most icons and Hamburger Menu */}
+          {/* Right Icons */}
           <div className={styles.rightIconsSection}>
-            {/* Language Switch Button */}
+            {/* Language */}
             <div
-                className={styles.languageButtonContainer}
-                onMouseEnter={() => setShowLanguageTooltip(true)}
-                onMouseLeave={() => setShowLanguageTooltip(false)}
+              className={styles.languageButtonContainer}
+              onMouseEnter={() => setShowLanguageTooltip(true)}
+              onMouseLeave={() => setShowLanguageTooltip(false)}
             >
-                <button
-                    className={styles.languageButton}
-                    onClick={handleLanguageClick}
-                >
-                    <Globe size={20} />
-                </button>
-                {showLanguageTooltip && (
-                    <div className={styles.tooltip}>{t('header.language.tooltip')}</div>
-                )}
+              <button className={styles.languageButton} onClick={handleLanguageClick}>
+                <Globe size={20} />
+              </button>
+              {showLanguageTooltip && (
+                <div className={styles.tooltip}>{t('header.language.tooltip')}</div>
+              )}
             </div>
 
-            {/* Hamburger Menu */}
+            {/* Menu */}
             <div className={styles.hamburgerContainer} ref={dropdownRef}>
-              <button
-                className={styles.hamburgerButton}
-                onClick={handleMenuClick}
-              >
+              <button className={styles.hamburgerButton} onClick={handleMenuClick}>
                 <Menu size={20} />
               </button>
               {showMenuTooltip && !isDropdownOpen && (
                 <div className={styles.tooltip}>{t('header.menu.tooltip')}</div>
               )}
-              
               <div className={`${styles.dropdown} ${isDropdownOpen ? styles.open : ''}`}>
                 <div className={`${styles.dropdownItem} ${styles.connectWalletItem}`}>
                   <CustomConnectButton variant="primary" size="sm" />
                 </div>
-                
+
                 <Link to="/dashboard" className={styles.dropdownItem}>
                   <LayoutDashboard size={18} />
                   {t('header.dashboard')}
                 </Link>
-                
+
                 <Link to="/create" className={styles.dropdownItem}>
                   <Plus size={18} />
                   Create Module
                 </Link>
-                
+
                 <Link to="/library" className={styles.dropdownItem}>
                   <Library size={18} />
                   {t('header.library')}
                 </Link>
-                
+
                 <Link to="/pricing" className={styles.dropdownItem}>
                   <DollarSign size={18} />
                   {t('header.pricing')}
                 </Link>
-                
+
                 <Link to="/about" className={styles.dropdownItem}>
                   <Info size={18} />
                   {t('header.about')}
                 </Link>
-                
+
                 <Link to="/faq" className={styles.dropdownItem}>
                   <HelpCircle size={18} />
                   {t('header.faq')}
                 </Link>
-                
+
                 <Link to="/tutorials" className={styles.dropdownItem}>
                   <BookOpen size={18} />
                   {t('header.tutorials')}
@@ -319,7 +320,7 @@ const Header: React.FC = () => {
         </div>
       </header>
 
-      {/* Enhanced Language Modal */}
+      {/* Language Modal */}
       <div className={`${styles.languageModal} ${isLanguageModalOpen ? styles.open : ''}`}>
         <div className={styles.languageModalContent}>
           <div className={styles.languageModalHeader}>
@@ -327,14 +328,11 @@ const Header: React.FC = () => {
               <Globe className={styles.languageModalIcon} size={24} />
               <h3 className={styles.languageModalTitle}>{t('header.languageModal.title')}</h3>
             </div>
-            <button
-              className={styles.closeButton}
-              onClick={() => setIsLanguageModalOpen(false)}
-            >
+            <button className={styles.closeButton} onClick={() => setIsLanguageModalOpen(false)}>
               <X size={20} />
             </button>
           </div>
-          
+
           <div className={styles.languageGrid}>
             {languages.map((lang) => (
               <div
@@ -353,7 +351,7 @@ const Header: React.FC = () => {
               </div>
             ))}
           </div>
-          
+
           <div className={styles.languageModalFooter}>
             <p className={styles.languageModalNote}>
               {t('header.languageModal.footer')}
